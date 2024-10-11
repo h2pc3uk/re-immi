@@ -1,6 +1,13 @@
 import logging
 
 def convert_to_big5(content):
+    """
+    將 Unicode 字串轉換為 Big5 編碼。
+
+    :param content: 要轉換的 Unicode 字串
+    :return: 轉換後的 Big5 編碼字串（bytes），或 None 如果轉換失敗
+    :rtype: bytes or None
+    """
     try:
         big5_content = content.encode('big5', errors='replace')
         logging.debug(f'轉換為 Big5 編碼，長度：{len(big5_content)} 位元組')
@@ -10,6 +17,12 @@ def convert_to_big5(content):
         return None
 
 def verify_big5_file(file_path):
+    """
+    驗證檔案是否可以以 Big5 編碼讀取。
+
+    :param file_path: 要驗證的檔案路徑
+    :return: None
+    """
     try:
         with open(file_path, 'rb') as file:
             content = file.read().decode('big5')
@@ -21,6 +34,19 @@ def verify_big5_file(file_path):
         logging.error(f"讀取檔案 {file_path} 時發生錯誤：{e}")
 
 def process_special_file(content, file_type):
+    """
+    處理特殊的檔案內容，包括：
+
+    1. 移除第一行和最後一行（根據特定條件）
+    2. 處理每一行，忽略空行
+    3. 將每一行轉換為 Big5 編碼
+    4. 確保末尾有一個換行符號
+
+    :param content: 要處理的 Unicode 字串
+    :param file_type: 檔案類型（'Fled', 'Immi', 'Punish'）
+    :return: 處理後的 Unicode 字串
+    :rtype: str
+    """
     lines = content.splitlines()
 
     # 移除第一行和最後一行（根據特定條件）
@@ -46,6 +72,14 @@ def process_special_file(content, file_type):
     return processed_content
 
 def process_line_by_type(parts, file_type):
+    """
+    處理每一行，根據檔案類型。
+
+    :param parts: 行內容的分割結果
+    :param file_type: 檔案類型（'Fled', 'Immi', 'Punish'）
+    :return: 處理後的 Unicode 字串
+    :rtype: str
+    """
     try:
         if file_type == 'Fled':
             return process_fled_file(parts)
@@ -62,6 +96,13 @@ def process_line_by_type(parts, file_type):
         return None
 
 def process_fled_file(parts):
+    """
+    處理 Fled 檔案的每一行內容。
+
+    :param parts: 行內容的分割結果
+    :return: 處理後的 Unicode 字串
+    :rtype: str
+    """
     result = ['I']
     result.append(parts[1].ljust(10)[:10])
     result.append(parts[2].ljust(50)[:50])
@@ -75,6 +116,13 @@ def process_fled_file(parts):
     return '!'.join(result)
 
 def process_immi_file(parts):
+    """
+    處理 Immi 檔案的每一行內容。
+
+    :param parts: 行內容的分割結果
+    :return: 處理後的 Unicode 字串
+    :rtype: str
+    """
     result = ['I' if parts[0] == 'I' else 'U']
     result.append(parts[1].ljust(10)[:10])
     result.append(' ' * 50)
@@ -88,6 +136,13 @@ def process_immi_file(parts):
     return '!'.join(result)
 
 def process_punish_file(parts):
+    """
+    處理 Punish 檔案的每一行內容。
+
+    :param parts: 行內容的分割結果
+    :return: 處理後的 Unicode 字串
+    :rtype: str
+    """
     result = ['U']
     result.append(parts[1].ljust(10)[:10])
     result.append(' ' * 50)
