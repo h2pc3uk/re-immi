@@ -3,11 +3,24 @@ import chardet
 import logging
 
 def ensure_dir(directory):
+    """
+    確定目錄是否存在，如果不存在則創建它。
+
+    :param directory: 要確定的目錄路徑
+    :return: None
+    """
     if not os.path.exists(directory):
         os.makedirs(directory)
         logging.info(f'建立目錄: {directory}')
 
 def detect_encoding(file_path):
+    """
+    檢測檔案的編碼。
+
+    :param file_path: 要檢測的檔案路徑
+    :return: 檔案的編碼（可能為 None）
+    :rtype: str or None
+    """
     try:
         with open(file_path, 'rb') as file:
             raw_data = file.read()
@@ -19,6 +32,16 @@ def detect_encoding(file_path):
         return None
 
 def read_file(file_path):
+    """
+    讀取檔案的內容，並嘗試使用適合的編碼讀取。
+
+    1. 首先使用 chardet 庫來檢測檔案的編碼。
+    2. 使用上一步驟檢測到的編碼來讀取檔案，並將其內容回傳。
+
+    :param file_path: 要讀取的檔案路徑
+    :return: 檔案的內容（可能為 None）
+    :rtype: str or None
+    """
     detected_encoding = detect_encoding(file_path)
     try:
         with open(file_path, 'r', encoding=detected_encoding) as file:
@@ -30,6 +53,13 @@ def read_file(file_path):
         return None
 
 def write_big5_file(file_path, content):
+    """
+    將 Big5 編碼的內容寫入到檔案中。
+
+    :param file_path: 要寫入的檔案路徑
+    :param content: 要寫入的 Big5 編碼內容（bytes）
+    :return: None
+    """
     try:
         with open(file_path, 'wb') as file:
             file.write(content)
